@@ -1,0 +1,726 @@
+/* Webfolio de Juan Salvador — jsdesignportfolio.com
+   1. Fuente y variables del design system Juan Salvador (tokens.json), para pantalla.
+   2. Estilos tipográficos del sistema (.titulo, .subtitulo, .cuerpo, .etiqueta…).
+   3. Maquetación de la web: contenedor, dos columnas, héroe, proyectos y faldón.
+   4. Componentes del sistema (bundle.css del design system).
+   5. Movimiento (lo controla js/main.js). */
+
+/* 1. Fuente y variables ------------------------------------------------- */
+
+@font-face {
+  font-family: "Zalando Sans SemiExpanded";
+  src: url("../fonts/zalando-sans-semiexpanded.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --corporativo: #274798;
+  --secundario: #a0b9e1;
+  --blanco: #ffffff;
+  --negro: #1d1d1b;
+
+  --font-sans: "Zalando Sans SemiExpanded", "Helvetica Neue", Arial, sans-serif;
+
+  --espacio-parrafo: 13px;
+  --espacio-fila: 34px;
+  --espacio-modulo: 37px;
+  --espacio-medianil: 74px;
+  --radio-recto: 0;
+  --pagina-ancho: 1120px;
+  --pagina-alto: 790px;
+  --columna-ancho: 486px;
+  --proporcion-aurea: 1.618;
+  --trazo-filete: 1px;
+  --trazo-foco: 2px;
+
+  /* Escala de pantalla: título 94 px que baja a 48 px en móvil;
+     el subtítulo es siempre título ÷ 1,618 ÷ 1,618. */
+  --titulo-tamano: clamp(48px, 8.4vw, 94px);
+  --subtitulo-tamano: calc(var(--titulo-tamano) / var(--proporcion-aurea) / var(--proporcion-aurea));
+
+  /* Interlineado de titulares en la web, algo más abierto que el del
+     dossier (0,96 y 1,09) para que respiren en pantalla. */
+  --interlineado-titulo: 1.08;
+  --interlineado-subtitulo: 1.25;
+
+  /* Medidas de la web, derivadas del módulo (37 px) */
+  --margen-web: clamp(20px, 2.6vw, 37px);
+  --espacio-seccion: clamp(74px, 10.3vw, 148px);
+}
+
+:root, [data-theme="blanco"] {
+  --fondo: var(--blanco);
+  --tinta: var(--negro);
+  --filete: var(--negro);
+  --marca: var(--corporativo);
+  --marca-detalle: var(--blanco);
+  --foco: var(--corporativo);
+}
+[data-theme="secundario"] {
+  --fondo: var(--secundario);
+  --tinta: var(--negro);
+  --filete: var(--negro);
+  --marca: var(--corporativo);
+  --marca-detalle: var(--blanco);
+  --foco: var(--corporativo);
+}
+[data-theme="corporativo"] {
+  --fondo: var(--corporativo);
+  --tinta: var(--blanco);
+  --filete: var(--blanco);
+  --marca: var(--blanco);
+  --marca-detalle: var(--corporativo);
+  --foco: var(--blanco);
+}
+[data-theme] { background: var(--fondo); color: var(--tinta); }
+
+/* 2. Tipografía --------------------------------------------------------- */
+
+.titulo, .titulo-fuerte, .subtitulo, .subtitulo-ligero, .rotulo-guia,
+.cuerpo, .cuerpo-enfasis, .cuerpo-regular, .etiqueta, .meta {
+  font-family: var(--font-sans);
+  font-style: normal;
+  letter-spacing: 0;
+}
+.titulo           { font-size: var(--titulo-tamano); line-height: var(--interlineado-titulo); font-weight: 300; text-transform: uppercase; }
+.titulo-fuerte    { font-size: var(--titulo-tamano); line-height: var(--interlineado-titulo); font-weight: 500; text-transform: uppercase; }
+.subtitulo        { font-size: var(--subtitulo-tamano); line-height: var(--interlineado-subtitulo); font-weight: 500; text-transform: uppercase; }
+.subtitulo-ligero { font-size: var(--subtitulo-tamano); line-height: var(--interlineado-subtitulo); font-weight: 300; text-transform: uppercase; }
+.rotulo-guia      { font-size: 23px; line-height: 1.2; font-weight: 400; }
+.cuerpo           { font-size: 16px; line-height: 1.2; font-weight: 300; }
+.cuerpo-enfasis   { font-size: 16px; line-height: 1.2; font-weight: 500; }
+.cuerpo-regular   { font-size: 16px; line-height: 1.2; font-weight: 400; }
+.etiqueta         { font-size: 16px; line-height: 1.2; font-weight: 500; text-transform: uppercase; }
+.meta             { font-size: 14px; line-height: 1.2; font-weight: 200; }
+
+/* 3. Maquetación -------------------------------------------------------- */
+
+.web {
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+.web h1, .web h2, .web h3, .web p, .web figure, .web blockquote { margin: 0; }
+.web strong { font-weight: 500; }
+.jsd-cuerpo { text-wrap: pretty; }
+
+/* Enlaces: color del texto; al pasar, subrayado fino a 4 px; foco sólido */
+.web a { color: inherit; text-decoration: none; }
+.web a:not(.enlace-logo):not(.jsd-indice__fila):hover {
+  text-decoration: underline;
+  text-decoration-thickness: var(--trazo-filete);
+  text-underline-offset: 4px;
+}
+.web a:focus-visible { outline: var(--trazo-foco) solid var(--foco); outline-offset: 4px; }
+
+.contenedor {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1760px;
+  margin-inline: auto;
+  padding-inline: var(--margen-web);
+}
+
+.dos-columnas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--espacio-medianil);
+  row-gap: var(--espacio-modulo);
+}
+
+/* Cabecera: logotipo (vuelve al inicio) y navegación */
+.cabecera-web {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-parrafo) var(--espacio-modulo);
+  padding-top: var(--espacio-modulo);
+  padding-bottom: var(--espacio-modulo);
+}
+.enlace-logo { display: inline-flex; }
+.navegacion { display: flex; flex-wrap: wrap; gap: 0 var(--espacio-modulo); }
+.navegacion a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Héroe: titular a todo el ancho; retrato y nombre en la retícula */
+.heroe {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(74px, 7.7vw, 111px);
+  padding-top: clamp(37px, 5.1vw, 74px);
+  padding-bottom: var(--espacio-seccion);
+}
+.titular { max-width: 9.6em; }
+.heroe__pie { align-items: start; }
+
+/* Marcadores de imagen (pendientes de foto): fondo secundario, ángulo recto */
+.marcador {
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--espacio-parrafo);
+  background: var(--secundario);
+  color: var(--negro);
+  border-radius: var(--radio-recto);
+}
+.retrato {
+  display: block;
+  width: min(331px, 100%);
+  height: auto;
+  aspect-ratio: 331 / 280;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: var(--radio-recto);
+  background: var(--secundario);
+}
+
+/* Introducción: cita a la izquierda, texto a la derecha */
+.intro { padding-top: var(--espacio-medianil); padding-bottom: var(--espacio-seccion); }
+.intro__cita { display: flex; flex-direction: column; gap: calc(var(--espacio-parrafo) * 2); }
+.intro__autor { display: flex; flex-direction: column; }
+
+/* Proyectos: dos columnas de tres. Izquierda, elaboración propia;
+   derecha, gran envergadura. Las filas se alinean entre columnas. */
+.proyectos { padding-bottom: var(--espacio-seccion); }
+.proyectos__rejilla {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(4, auto);
+  grid-auto-flow: column;
+  column-gap: var(--espacio-medianil);
+  row-gap: clamp(74px, 7.7vw, 111px);
+  padding-top: var(--espacio-medianil);
+}
+.proyectos__cabecera { display: flex; flex-direction: column; justify-content: flex-end; gap: var(--espacio-modulo); min-width: 0; }
+.tarjeta-proyecto { display: flex; flex-direction: column; gap: calc(var(--espacio-parrafo) * 2); min-width: 0; }
+/* Imagen del proyecto: llena el marco 5:4 y se recorta (object-position la encuadra) */
+.tarjeta-proyecto__imagen {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: var(--radio-recto);
+  background: var(--secundario);
+}
+/* Imagen de fondo blanco: filete de secundario, como la muestra blanca */
+.tarjeta-proyecto__imagen--contorno {
+  outline: var(--trazo-filete) solid var(--secundario);
+  outline-offset: calc(var(--trazo-filete) * -1);
+}
+.web .proyecto__filete { margin: calc(var(--espacio-parrafo) * 2) 0 var(--espacio-modulo); }
+.web .proyecto__disciplina { margin-bottom: var(--espacio-parrafo); }
+
+/* Tarjetas enlazadas a su página de proyecto */
+.tarjeta-proyecto__enlace { display: block; }
+
+/* Página de proyecto ---------------------------------------------------- */
+
+/* Ficha: título a la izquierda; categoría, texto y datos a la derecha */
+.ficha-proyecto { padding-bottom: var(--espacio-seccion); }
+.ficha-proyecto__pliego { padding-top: var(--espacio-medianil); }
+.ficha-proyecto__contenido { display: flex; flex-direction: column; min-width: 0; }
+.ficha-proyecto__datos { margin-top: var(--espacio-medianil); }
+
+/* Imágenes: principal a todo el ancho y galería a dos columnas */
+.imagenes-proyecto { padding-bottom: var(--espacio-seccion); }
+.imagen-proyecto {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: var(--radio-recto);
+  background: var(--secundario);
+}
+.imagen-proyecto--principal { aspect-ratio: 16 / 9; }
+.imagen-proyecto--vertical { aspect-ratio: 4 / 5; }
+.imagen-proyecto--ancha { aspect-ratio: 16 / 9; grid-column: 1 / -1; }
+.imagen-proyecto--contorno {
+  outline: var(--trazo-filete) solid var(--secundario);
+  outline-offset: calc(var(--trazo-filete) * -1);
+}
+/* Galería: retícula de dos columnas del pliego, medianil de un módulo.
+   Criterio: las fotografías se recortan a los formatos del sistema
+   (pareja 4:5, 3:2 o 1:1; panorámica 16:9 a todo el ancho) y las piezas
+   gráficas (carteles, mapas, señalética) se muestran enteras. */
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-modulo);
+  align-items: start;
+}
+.imagen-proyecto--cuadrada { aspect-ratio: 1 / 1; }
+.imagen-proyecto--apaisada { aspect-ratio: 3 / 2; }
+/* Natural: sin recorte. No fija proporción: la dan el width y el height del <img>,
+   así el navegador reserva su hueco antes de que cargue y la página no salta. */
+.imagen-proyecto--natural { height: auto; }
+.imagen-proyecto--completa { grid-column: 1 / -1; }
+/* Corte: separa dos grupos de imágenes con tres módulos en lugar de uno */
+.galeria__corte { margin-bottom: var(--espacio-medianil); }
+/* Serie: piezas de una misma familia (carteles, pictogramas) a tres columnas */
+.galeria__serie {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--espacio-modulo);
+  align-items: start;
+}
+
+/* Coreografía del logotipo (Sangre del Sur): el icono, SANGRE y DEL SUR son tres
+   piezas de un mismo SVG que se recolocan en bucle (12 s): icono solo → icono con el
+   nombre en dos líneas → nombre en dos líneas → nombre en una línea → icono sobre el
+   nombre en una línea → icono solo. SANGRE se desplaza primero en horizontal y luego
+   cae, para no pisar DEL SUR; el icono entra y sale del centro siempre en horizontal,
+   a la misma altura. Sin movimiento, queda la versión con el icono y el nombre en dos
+   líneas. Coordenadas en unidades del lienzo (1600 × 500). */
+.logo-coreografia {
+  position: relative;
+  grid-column: 1 / -1;
+  min-width: 0;
+  aspect-ratio: 16 / 5;
+  overflow: hidden;
+  background: var(--blanco);
+}
+.logo-coreografia__lienzo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: translate(-50%, -50%);
+}
+.logo-coreografia__pieza {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transform: translate(417.07px, 75.85px) scale(1.4000);
+  animation: 12s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.logo-coreografia__pieza--icono { animation-name: sds-icono; }
+.logo-coreografia__pieza--sangre { animation-name: sds-sangre; }
+.logo-coreografia__pieza--delsur { animation-name: sds-delsur; }
+@keyframes sds-icono {
+  0%, 13.33% { transform: translate(681.29px, 83.95px) scale(1.2923); opacity: 1; }
+  18.33%, 33.33% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  35.83% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 0; }
+  73.33% { transform: translate(316.75px, -116.05px) scale(1.2923); opacity: 0; }
+  80%, 95% { transform: translate(316.75px, 83.95px) scale(1.2923); opacity: 1; }
+  100% { transform: translate(681.29px, 83.95px) scale(1.2923); opacity: 1; }
+}
+@keyframes sds-sangre {
+  0%, 16.67% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
+  21.67%, 33.33% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  40%, 53.33% { transform: translate(263.64px, 75.85px) scale(1.4000); }
+  57.5% { transform: translate(17.94px, 75.85px) scale(1.4000); }
+  61.67%, 73.33% { transform: translate(17.94px, 191.74px) scale(1.4000); }
+  80%, 92.5% { transform: translate(17.94px, 327.56px) scale(1.4000); opacity: 1; }
+  95.83% { transform: translate(17.94px, 327.56px) scale(1.4000); opacity: 0; }
+  100% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
+}
+@keyframes sds-delsur {
+  0%, 16.67% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
+  21.67%, 33.33% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  40%, 53.33% { transform: translate(263.64px, 75.85px) scale(1.4000); }
+  57.5%, 73.33% { transform: translate(508.81px, 75.85px) scale(1.4000); }
+  80%, 92.5% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 1; }
+  95.83% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 0; }
+  100% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-coreografia__pieza { animation: none; }
+}
+
+/* El bloque del logotipo cede al texto siguiente el blanco que sobra bajo la versión
+   en reposo (icono con el nombre en dos líneas), para que quede a la misma distancia
+   del botón y de los textos. 8,625 % = (214 − 76) / 1600 unidades del lienzo. */
+.logo-coreografia { margin-bottom: -8.625%; }
+
+/* Galería por grupos: cada grupo abre con un filete, su categoría, su título y una
+   línea que lo explica; dentro, las imágenes alternan una, dos y tres columnas. */
+.galeria-grupo + .galeria-grupo { margin-top: var(--espacio-medianil); }
+.galeria-grupo__cabecera { margin-bottom: var(--espacio-modulo); }
+.galeria-grupo__pliego { padding-top: var(--espacio-modulo); align-items: start; }
+.galeria-grupo__titulo { display: flex; flex-direction: column; gap: var(--espacio-parrafo); min-width: 0; }
+
+/* Recurso tipográfico sobre el blanco de la web. Ocupa el alto de las imágenes de su
+   fila (alineado al centro o a un borde) y, al quedar a la vista, la tinta se expande
+   hasta formar las letras: el trazo (siempre negro) se desenfoca y un umbral de
+   contraste lo convierte en manchas que crecen; el rojo se tiñe con una capa en modo
+   aclarar, así el color final es exacto. Al pulsarlo, la animación se repite. */
+.recurso-tinta {
+  --tinta-roja: #c2171d;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  background: var(--blanco);
+}
+.recurso-tinta--vertical { aspect-ratio: 4 / 5; }
+.recurso-tinta--apaisado { aspect-ratio: 3 / 2; }
+.recurso-tinta__boton {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radio-recto);
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.recurso-tinta__boton:focus-visible { outline: var(--trazo-foco) solid var(--foco); outline-offset: calc(var(--trazo-foco) * -1); }
+.recurso-tinta__umbral {
+  position: relative;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  background: var(--blanco);
+}
+/* El trazo llena la caja y se ajusta a su alto sin deformarse (contain);
+   la posición decide si se alinea al centro o a un borde. */
+.recurso-tinta__trazo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.recurso-tinta--izquierda .recurso-tinta__trazo { object-position: left center; }
+.recurso-tinta--derecha .recurso-tinta__trazo { object-position: right center; }
+/* Recurso que ocupa dos filas de una serie (junto a una pareja y a la imagen doble
+   de debajo): toma el alto de las dos filas. */
+.recurso-tinta--alto { grid-row: span 2; align-self: stretch; aspect-ratio: auto; }
+/* Imagen doble: ocupa dos de las tres columnas de una serie. */
+.imagen-proyecto--doble { grid-column: span 2; aspect-ratio: 16 / 9; }
+.recurso-tinta--rojo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--tinta-roja);
+  mix-blend-mode: lighten;
+  pointer-events: none;
+}
+
+/* Proceso: Desarrollo, Problemas, Soluciones y Aprendizaje.
+   Dos pares, uno por columna del pliego; cada bloque abre con un filete. */
+.proceso { padding-bottom: var(--espacio-seccion); }
+.proceso__par {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--espacio-modulo);
+  row-gap: var(--espacio-medianil);
+}
+.proceso__bloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-parrafo);
+  min-width: 0;
+  padding-top: var(--espacio-fila);
+  border-top: var(--trazo-filete) solid var(--filete);
+}
+
+.web .proceso__titulo { margin-bottom: var(--espacio-medianil); }
+
+/* Botón a la web del proyecto (Mil manos): pieza en negativo, ángulo recto,
+   con la flecha del índice. Al pasar, la flecha avanza. */
+.boton-web {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--espacio-parrafo);
+  min-height: 56px;
+  margin-top: var(--espacio-medianil);
+  padding: 0 var(--espacio-modulo);
+  box-sizing: border-box;
+  border-radius: var(--radio-recto);
+  background: var(--fondo);
+  color: var(--tinta);
+}
+.boton-web__flecha { flex: none; width: 27px; height: 19px; fill: currentColor; transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.web a.boton-web,
+.web a.boton-web:hover { background: var(--corporativo); color: var(--blanco); }
+.web a.boton-web:focus-visible { outline-color: var(--corporativo); }
+.web a.boton-web:hover .boton-web__flecha,
+.web a.boton-web:focus-visible .boton-web__flecha { transform: translateX(6px); }
+@media (prefers-reduced-motion: reduce) {
+  .boton-web__flecha { transition: none; }
+}
+
+/* Carteles (Life Interchanging Films) ---------------------------------- */
+/* Selector: miniaturas de los cinco carteles que llevan a su sección. */
+.carteles { padding-bottom: var(--espacio-medianil); }
+.carteles__cabecera { padding-top: var(--espacio-modulo); align-items: start; }
+.carteles-selector {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--espacio-parrafo);
+  align-items: start;
+}
+.carteles-selector__item { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.carteles-selector__miniatura {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 900 / 1273;
+  object-fit: cover;
+  background: var(--secundario);
+}
+.carteles-selector__titulo { overflow-wrap: anywhere; }
+
+/* Sección de cada cartel: el cartel en una de las tres columnas (dos si hay dos
+   versiones); en el resto, su ficha (dirección, reparto, año y sinopsis) y la lista
+   para saltar a los demás, como en «Más proyectos». */
+.cartel { padding-bottom: var(--espacio-medianil); scroll-margin-top: var(--espacio-modulo); }
+.cartel--ultimo { padding-bottom: var(--espacio-seccion); }
+.cartel__pliego {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--espacio-modulo);
+  align-items: start;
+  padding-top: var(--espacio-modulo);
+}
+.cartel__imagenes { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--espacio-modulo); min-width: 0; }
+.cartel__imagenes--dos { grid-column: span 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cartel__texto {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-modulo);
+  align-items: start;
+  min-width: 0;
+}
+.cartel__imagenes--dos + .cartel__texto { grid-column: span 1; grid-template-columns: minmax(0, 1fr); row-gap: var(--espacio-medianil); }
+.cartel__ficha { display: flex; flex-direction: column; gap: var(--espacio-modulo); min-width: 0; }
+.cartel .jsd-trayectoria { --jsd-columna-fechas: 0px; }
+.web .cartel__otros-etiqueta { margin-bottom: var(--espacio-modulo); }
+
+/* Más proyectos */
+.mas-proyectos { padding-bottom: var(--espacio-seccion); }
+.web .mas-proyectos__etiqueta { padding-top: var(--espacio-medianil); margin-bottom: var(--espacio-medianil); }
+.web .mas-proyectos__titulo { margin-bottom: var(--espacio-modulo); }
+/* Proyecto en pantalla: la única fila sin enlace. Sin flecha y, en su hueco,
+   «ACTUAL» en estilo meta. */
+.mas-proyectos div.jsd-indice__fila .jsd-indice__flecha,
+.cartel__otros div.jsd-indice__fila .jsd-indice__flecha { display: none; }
+.mas-proyectos div.jsd-indice__fila::after,
+.cartel__otros div.jsd-indice__fila::after {
+  content: "ACTUAL";
+  flex: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 200;
+}
+
+/* Faldón */
+.faldon { background: var(--fondo); color: var(--tinta); }
+.faldon__interior {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-seccion);
+  padding-top: var(--espacio-seccion);
+  padding-bottom: var(--espacio-modulo);
+}
+.faldon__pie { align-items: end; }
+.faldon__logo { display: flex; align-items: flex-end; }
+.jsd-indice__texto { min-width: 0; overflow-wrap: anywhere; }
+
+/* Pantallas estrechas: una columna */
+@media (max-width: 900px) {
+  .dos-columnas { grid-template-columns: minmax(0, 1fr); row-gap: var(--espacio-medianil); }
+  .heroe__pie .retrato { order: 2; }
+  .proyectos__rejilla {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-auto-flow: row;
+    row-gap: var(--espacio-medianil);
+  }
+  .proyectos__cabecera ~ .proyectos__cabecera {
+    margin-top: var(--espacio-modulo);
+    padding-top: var(--espacio-medianil);
+    border-top: var(--trazo-filete) solid var(--filete);
+  }
+  .faldon__logo { order: 2; }
+  .galeria { grid-template-columns: minmax(0, 1fr); }
+  .galeria__serie { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cartel__pliego { grid-template-columns: minmax(0, 1fr); }
+  .cartel__imagenes--dos, .cartel__texto, .cartel__imagenes--dos + .cartel__texto { grid-column: auto; }
+}
+@media (max-width: 600px) {
+  .proceso__par { grid-template-columns: minmax(0, 1fr); }
+  .galeria__serie { grid-template-columns: minmax(0, 1fr); }
+  .logo-coreografia { aspect-ratio: 32 / 15; margin-bottom: -12.94%; }
+  .recurso-tinta--alto { grid-row: auto; aspect-ratio: 4 / 5; }
+  .imagen-proyecto--doble { grid-column: 1 / -1; }
+  .carteles-selector { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cartel__texto { grid-template-columns: minmax(0, 1fr); }
+  .logo-coreografia__lienzo { width: 150%; }
+}
+
+/* 4. Componentes del sistema ---------------------------------------------
+   Juan Salvador — estilos de los componentes. Se cargan después de las variables:
+   colores, espacios y trazos son variables de tokens.json; tamaños y pesos
+   tipográficos son las clases de estilo (.titulo, .cuerpo, .etiqueta…). */
+
+/* Títulos y subtítulos, siempre en mayúsculas, se usen donde se usen. */
+.titulo, .titulo-fuerte, .subtitulo, .subtitulo-ligero { text-transform: uppercase; }
+
+body { margin: 0; background: var(--fondo); color: var(--tinta); font-family: var(--font-sans); font-weight: 300; -webkit-font-smoothing: antialiased; }
+
+.jsd-marco { padding: var(--espacio-modulo); background: var(--fondo); color: var(--tinta); }
+.jsd-mayus { text-transform: uppercase; }
+.jsd-filete { display: block; height: 0; margin: 0; border: 0; border-top: var(--trazo-filete) solid var(--filete); }
+
+/* Logo */
+.jsd-logo { display: block; height: auto; }
+.jsd-logo__hoja { fill: var(--marca); }
+.jsd-logo__estrella { fill: var(--marca-detalle); }
+.jsd-logo--positivo .jsd-logo__hoja,
+.jsd-logo--negativo .jsd-logo__estrella { fill: var(--corporativo); }
+.jsd-logo--positivo .jsd-logo__estrella,
+.jsd-logo--negativo .jsd-logo__hoja { fill: var(--blanco); }
+
+/* TituloSeccion */
+.jsd-titulo-seccion { margin: 0; color: var(--tinta); text-transform: uppercase; }
+.jsd-titulo-seccion > span { display: block; white-space: nowrap; }
+
+/* CabeceraNombre */
+.jsd-cabecera { color: var(--tinta); }
+.jsd-cabecera p { margin: 0; text-transform: uppercase; }
+.jsd-cabecera .jsd-filete { margin-top: calc(var(--espacio-parrafo) * 2); margin-bottom: var(--espacio-modulo); }
+
+/* Cuerpo */
+.jsd-cuerpo { max-width: var(--columna-ancho); color: var(--tinta); hyphens: auto; -webkit-hyphens: auto; }
+.jsd-cuerpo p { margin: 0; }
+.jsd-cuerpo p + p { margin-top: var(--espacio-parrafo); }
+.jsd-cuerpo strong, .jsd-cuerpo b { font-weight: 500; }
+.jsd-cuerpo em, .jsd-cuerpo i { font-style: normal; font-weight: 500; }
+
+/* Indice */
+.jsd-indice { color: var(--tinta); }
+.jsd-indice ol { list-style: none; margin: 0; padding: 0; }
+.jsd-indice li + li { border-top: var(--trazo-filete) solid var(--filete); }
+.jsd-indice__fila { display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-parrafo); padding: var(--espacio-fila) 0; color: inherit; text-decoration: none; text-transform: uppercase; }
+.jsd-indice li:first-child .jsd-indice__fila { padding-top: 0; }
+.jsd-indice li:last-child .jsd-indice__fila { padding-bottom: 0; }
+.jsd-indice__flecha { flex: none; width: 27px; height: 19px; fill: var(--tinta); }
+a.jsd-indice__fila:hover .jsd-indice__texto { text-decoration: underline; text-decoration-thickness: var(--trazo-filete); text-underline-offset: 4px; }
+a.jsd-indice__fila:focus-visible { outline: var(--trazo-foco) solid var(--foco); outline-offset: 4px; }
+
+/* Trayectoria */
+.jsd-trayectoria { list-style: none; margin: 0; padding: 0; color: var(--tinta); --jsd-columna-1: 42.8%; --jsd-columna-fechas: 76px; }
+.jsd-trayectoria__fila { display: grid; grid-template-columns: var(--jsd-columna-1) 1fr var(--jsd-columna-fechas); align-items: start; padding: var(--espacio-fila) 0; }
+.jsd-trayectoria__fila + .jsd-trayectoria__fila { border-top: var(--trazo-filete) solid var(--filete); }
+.jsd-trayectoria__fila:first-child { padding-top: 0; }
+.jsd-trayectoria__fila:last-child { padding-bottom: 0; }
+.jsd-trayectoria__titulo { margin: 0; padding-right: var(--espacio-parrafo); text-transform: uppercase; white-space: pre-line; }
+.jsd-trayectoria__detalle { margin: 0; padding-right: var(--espacio-parrafo); white-space: pre-line; }
+.jsd-trayectoria__fechas { margin: 0; white-space: nowrap; }
+.jsd-trayectoria__fechas span { display: block; }
+
+/* Cita */
+.jsd-cita { margin: 0; color: var(--tinta); }
+.jsd-cita blockquote { margin: 0; white-space: pre-line; }
+.jsd-cita figcaption { margin-top: var(--espacio-parrafo); }
+
+/* Firma */
+.jsd-firma { color: var(--tinta); }
+.jsd-firma__trazo { margin-bottom: 46px; }
+.jsd-firma p { margin: 0; }
+.jsd-firma p.jsd-firma__lugar { margin-top: 1.2em; }
+
+/* Colofon */
+.jsd-colofon { color: var(--tinta); }
+.jsd-colofon .jsd-logo { margin: var(--espacio-modulo) 0; }
+.jsd-colofon p { margin: 0; }
+.jsd-colofon__grupo + .jsd-colofon__grupo { margin-top: 1.2em; }
+.jsd-colofon a { color: inherit; text-decoration: none; }
+.jsd-colofon a:hover { text-decoration: underline; text-decoration-thickness: var(--trazo-filete); text-underline-offset: 3px; }
+.jsd-colofon a:focus-visible { outline: var(--trazo-foco) solid var(--foco); outline-offset: 4px; }
+
+/* Muestra */
+.jsd-muestra { display: flex; align-items: center; gap: 30px; color: var(--tinta); }
+.jsd-muestra__color { flex: none; width: 128px; height: 128px; border-radius: var(--radio-recto); box-sizing: border-box; }
+.jsd-muestra__color--contorno { border: var(--trazo-filete) solid var(--secundario); }
+.jsd-muestra p { margin: 0; }
+
+/* Pliego */
+.jsd-pliego { position: relative; box-sizing: border-box; width: var(--pagina-ancho); max-width: 100%; aspect-ratio: 1120 / 790; padding: var(--espacio-modulo); display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--espacio-medianil); background: var(--fondo); color: var(--tinta); overflow: hidden; }
+.jsd-pliego__columna { display: flex; flex-direction: column; min-width: 0; }
+.jsd-pliego__pie { margin-top: auto; padding-top: var(--espacio-modulo); }
+.jsd-pliego__continua { position: absolute; right: var(--espacio-modulo); bottom: calc(var(--espacio-modulo) - 5px); margin: 0; line-height: 1; letter-spacing: 0; }
+
+/* 5. Movimiento ----------------------------------------------------------
+   Lo controla js/main.js. Cada elemento animado lleva data-anim con su tipo:
+   subir · mascara · telon · filete · palabras · lineas · tinta.
+   Sin JavaScript, o con «reducir movimiento» activado en el sistema,
+   la web se ve quieta y completa. */
+
+html { scroll-behavior: smooth; }
+body { margin: 0; }
+
+/* Titulares partidos: cada palabra (o cada línea de un título de sección)
+   sube desde su propia línea base, como si saliera de debajo del renglón. */
+.palabra { display: inline-block; clip-path: inset(-0.4em -0.2em -0.12em -0.2em); }
+.palabra__interior,
+.linea__interior { display: inline-block; }
+.jsd-titulo-seccion > span { clip-path: inset(-0.4em -0.4em -0.12em -0.4em); }
+
+/* Los filetes se trazan de izquierda a derecha */
+.jsd-filete[data-anim] { transform-origin: 0 50%; }
+
+/* Tarjetas de proyecto: la imagen se acerca un poco al pasar el cursor */
+.tarjeta-proyecto__enlace { overflow: hidden; }
+.tarjeta-proyecto__imagen { transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.tarjeta-proyecto:hover .tarjeta-proyecto__imagen { transform: scale(1.03); }
+
+/* Estado de partida (solo con JavaScript y sin «reducir movimiento»). Se oculta con
+   opacidad y no con recortes ni escalas: así el navegador sigue detectando cuándo
+   el elemento entra en pantalla. Al revelarse, main.js anima desde su forma de partida. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-anim="subir"]:not(.revelado),
+  .js [data-anim="tinta"]:not(.revelado),
+  .js [data-anim="mascara"]:not(.revelado),
+  .js [data-anim="telon"]:not(.revelado),
+  .js [data-anim="filete"]:not(.revelado) { opacity: 0; }
+  .js [data-anim="palabras"]:not(.revelado) .palabra__interior,
+  .js [data-anim="lineas"]:not(.revelado) .linea__interior { transform: translateY(115%); }
+
+  /* Red de seguridad: si main.js no llegara a ejecutarse, todo aparece a los 2,5 s */
+  .js:not(.animado) [data-anim],
+  .js:not(.animado) .palabra__interior,
+  .js:not(.animado) .linea__interior { animation: mostrar 0.01s 2.5s forwards; }
+}
+@keyframes mostrar { to { opacity: 1; clip-path: inset(0); transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .tarjeta-proyecto__imagen { transition: none; }
+  .tarjeta-proyecto:hover .tarjeta-proyecto__imagen { transform: none; }
+}
+
+/* Ámbitos de conocimiento (Congreso AJÁ!) -------------------------------
+   Pieza gráfica sin marco ni fondo, a todo el ancho de la galería, separada
+   de los carteles por un corte. Las cinco franjas se dibujan en bucle; en
+   pantallas estrechas el encuadre se queda solo con las franjas. */
+.web .ambitos-aja {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: calc(var(--espacio-medianil) - var(--espacio-modulo)) 0 0;
+}
+.ambitos-aja__lienzo { display: block; width: 100%; height: auto; }
+.ambitos-aja--estrecho .ambitos-aja__fijos { display: none; }
