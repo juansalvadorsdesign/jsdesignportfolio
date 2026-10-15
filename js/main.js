@@ -9,9 +9,11 @@
         palabras  cada palabra del titular sube desde su renglón
         lineas    cada línea del título de sección sube desde su renglón
         tinta     recurso tipográfico de Sangre del Sur: la tinta se expande
-   2. Recursos de tinta: al pulsarlos, la animación se repite.
-   3. Ámbitos de conocimiento de AJÁ!: las cinco franjas se dibujan, se
-      rotulan y se recogen en bucle mientras la pieza está a la vista.
+   2. Cabecera: se esconde al bajar y reaparece en cuanto se sube.
+   3. Recursos de tinta: al pulsarlos, la animación se repite.
+   4. Ámbitos de conocimiento de AJÁ!: las cinco franjas se dibujan, se
+      rotulan y se recogen en bucle mientras la pieza está a la vista. En
+      pantallas estrechas la pieza se recompone en vertical.
 
    Sin JavaScript, o con «reducir movimiento» activado en el sistema,
    todo se ve quieto y completo. */
@@ -82,30 +84,114 @@
   if (!puedeAnimar) {
     animables.forEach(function (el) { el.classList.add('revelado'); });
   } else {
-    var alEntrar = function (observador) {
-      return function (entradas) {
+    // Lo que no se muestra en esta pantalla (p. ej. la invitación a bajar en el móvil) queda ya revelado
+    animables = animables.filter(function (el) {
+      if (el.getClientRects().length) return true;
+      el.classList.add('revelado');
+      return false;
+    });
+    var pendientes = animables.slice();
+    var quitar = function (el) {
+      var i = pendientes.indexOf(el);
+      if (i > -1) pendientes.splice(i, 1);
+    };
+
+    // ¿Está lo bastante a la vista? Una parte de su alto (el 15 %; la tinta, la mitad)
+    // o, si es más alto que la pantalla, al menos un cuarto de ella.
+    var aLaVista = function (entrada, parte) {
+      if (!entrada.isIntersecting) return false;
+      if (entrada.intersectionRatio >= parte) return true;
+      var pantalla = entrada.rootBounds ? entrada.rootBounds.height : window.innerHeight;
+      return entrada.intersectionRect.height >= pantalla * 0.25;
+    };
+
+    var alEntrar = function (parte) {
+      return function (entradas, observador) {
         var orden = 0;
         entradas.forEach(function (entrada) {
           var el = entrada.target;
           var pasado = entrada.boundingClientRect.bottom < 0;
-          if (!entrada.isIntersecting && !pasado) return;
+          if (!pasado && !aLaVista(entrada, parte)) return;
           observador.unobserve(el);
+          quitar(el);
           if (pasado) { el.classList.add('revelado'); return; }  // ya quedó atrás: sin animación
           revelar(el, Math.min(orden++, PASO_MAX) * PASO);
         });
       };
     };
-    var observador = new IntersectionObserver(function (e) { alEntrar(observador)(e); },
-      { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
-    // La tinta espera a estar a la vista en su mitad
-    var observadorTinta = new IntersectionObserver(function (e) { alEntrar(observadorTinta)(e); },
-      { threshold: 0.5 });
+
+    var observador = new IntersectionObserver(alEntrar(0.15), { threshold: [0, 0.05, 0.1, 0.15, 0.3, 0.6, 1] });
+    var observadorTinta = new IntersectionObserver(alEntrar(0.5), { threshold: [0, 0.25, 0.5, 0.75, 1] });
     animables.forEach(function (el) {
       (el.getAttribute('data-anim') === 'tinta' ? observadorTinta : observador).observe(el);
     });
+
+    // Al llegar al final de la página, aparece todo lo que esté en pantalla
+    // (lo último, como el logotipo del faldón, nunca puede subir más)
+    var alFinal = function () {
+      if (!pendientes.length) { window.removeEventListener('scroll', alFinal); return; }
+      var raizDoc = document.documentElement;
+      if (window.innerHeight + window.pageYOffset < raizDoc.scrollHeight - 4) return;
+      var orden = 0;
+      pendientes.slice().forEach(function (el) {
+        var caja = el.getBoundingClientRect();
+        if (caja.top >= window.innerHeight || caja.bottom <= 0) return;
+        observador.unobserve(el);
+        observadorTinta.unobserve(el);
+        quitar(el);
+        revelar(el, Math.min(orden++, PASO_MAX) * PASO);
+      });
+    };
+    window.addEventListener('scroll', alFinal, { passive: true });
+    alFinal();
   }
 
-  /* 2. Recursos de tinta: al pulsar, se repite ----------------------------- */
+  /* 2. Cabecera: se esconde al bajar y vuelve en cuanto se sube ------------- */
+  var cabecera = document.querySelector('.cabecera-web');
+  if (cabecera) {
+    var UMBRAL = 6;          // px de recorrido antes de reaccionar (evita temblores)
+    var ultimaY = Math.max(window.pageYOffset, 0);
+    var enCola = false;
+    var quietaHasta = 0;     // tras un enlace interno, sigue escondida mientras se desplaza
+
+    var poner = function (oculta) {
+      cabecera.classList.toggle('cabecera--oculta', oculta);
+    };
+    var actualizar = function () {
+      enCola = false;
+      var y = Math.max(window.pageYOffset, 0);
+      var alto = cabecera.offsetHeight;
+      var recorrido = y - ultimaY;
+      cabecera.classList.toggle('cabecera--flotante', y > alto);
+      if (y <= alto) { poner(false); ultimaY = y; return; }
+      if (Date.now() < quietaHasta) { poner(true); ultimaY = y; return; }
+      if (Math.abs(recorrido) < UMBRAL) return;
+      poner(recorrido > 0);
+      ultimaY = y;
+    };
+    window.addEventListener('scroll', function () {
+      if (!enCola) { enCola = true; window.requestAnimationFrame(actualizar); }
+    }, { passive: true });
+
+    // Enlaces a otra parte de la misma página (PROYECTOS, CONTACTO, carteles…):
+    // la cabecera se aparta para no tapar el destino
+    document.addEventListener('click', function (evento) {
+      var enlace = evento.target.closest && evento.target.closest('a[href^="#"]');
+      if (!enlace || enlace.getAttribute('href').length < 2) return;
+      quietaHasta = Date.now() + 1200;
+      poner(true);
+    });
+    // Con el teclado, la cabecera aparece al llegar a sus enlaces
+    cabecera.addEventListener('focusin', function () { poner(false); });
+
+    // Si la página se abre ya desplazada (por ejemplo, index.html#proyectos), empieza escondida
+    if (ultimaY > cabecera.offsetHeight) {
+      cabecera.classList.add('cabecera--flotante');
+      poner(true);
+    }
+  }
+
+  /* 3. Recursos de tinta: al pulsar, se repite ----------------------------- */
   document.addEventListener('click', function (evento) {
     var boton = evento.target.closest && evento.target.closest('.recurso-tinta__boton');
     if (!boton || reducir || typeof Element.prototype.animate !== 'function') return;
@@ -117,18 +203,19 @@
     tinta(figura, 0);
   });
 
-  /* 3. Ámbitos de conocimiento de AJÁ! ------------------------------------ */
+  /* 4. Ámbitos de conocimiento de AJÁ! ------------------------------------ */
   lista('[data-ambitos]').forEach(function (figura) {
     var svg = figura.querySelector('svg');
     if (!svg) return;
 
-    // En pantallas estrechas, el encuadre se queda solo con las franjas
+    // En pantallas estrechas, composición vertical: textos arriba, franjas y logotipo al pie
+    // (los grupos se recolocan en estilos.css con .ambitos-aja--estrecho)
     var COMPLETO = '95 93 1636 895';
-    var SOLO_FRANJAS = '1020 96 722 888';
+    var VERTICAL = '1020 -403 722 1554';
     var estrecho = window.matchMedia ? window.matchMedia('(max-width: 600px)') : null;
     var encuadrar = function () {
       var si = !!(estrecho && estrecho.matches);
-      svg.setAttribute('viewBox', si ? SOLO_FRANJAS : COMPLETO);
+      svg.setAttribute('viewBox', si ? VERTICAL : COMPLETO);
       figura.classList.toggle('ambitos-aja--estrecho', si);
     };
     encuadrar();

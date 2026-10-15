@@ -25,6 +25,8 @@ docs/cv-juan-salvador.pdf      Currículum descargable
 
 Cada elemento animado lleva `data-anim` con su tipo: `subir`, `mascara`, `telon`, `filete`, `palabras`, `lineas` o `tinta`. Para animar un elemento nuevo basta con añadirle el atributo. Sin JavaScript, o con «reducir movimiento» activado en el sistema, la web se ve quieta y completa.
 
+La cabecera se queda fija arriba: se esconde al bajar y reaparece en cuanto se sube. En las páginas de proyecto con botón, «Conoce el proyecto» invita a seguir bajando.
+
 ## Publicación
 
 El dominio jsdesignportfolio.com está en IONOS. La web se publica con IONOS Deploy Now desde este repositorio: cada cambio en la rama principal se publica solo. Es un sitio estático: no necesita comando de compilación y la carpeta de publicación es la raíz del repositorio.

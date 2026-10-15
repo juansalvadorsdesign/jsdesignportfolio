@@ -132,8 +132,15 @@
   row-gap: var(--espacio-modulo);
 }
 
-/* Cabecera: logotipo (vuelve al inicio) y navegación */
+/* Cabecera: logotipo (vuelve al inicio) y navegación.
+   Se queda fija arriba: al bajar se esconde y en cuanto se sube vuelve a
+   aparecer, deslizándose (main.js pone .cabecera--oculta). Cuando flota sobre
+   el contenido, un filete la separa de él (.cabecera--flotante). El fondo
+   llega a los bordes de la pantalla aunque el contenedor tenga ancho máximo. */
 .cabecera-web {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -141,6 +148,25 @@
   gap: var(--espacio-parrafo) var(--espacio-modulo);
   padding-top: var(--espacio-modulo);
   padding-bottom: var(--espacio-modulo);
+  background: var(--fondo);
+  box-shadow: 0 0 0 100vmax var(--fondo);
+  clip-path: inset(0 -100vmax);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.cabecera-web::after {
+  content: "";
+  position: absolute;
+  left: var(--margen-web);
+  right: var(--margen-web);
+  bottom: 0;
+  border-top: var(--trazo-filete) solid var(--filete);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cabecera--flotante::after { opacity: 1; }
+.cabecera--oculta { transform: translateY(-100%); }
+@media (prefers-reduced-motion: reduce) {
+  .cabecera-web, .cabecera-web::after { transition: none; }
 }
 .enlace-logo { display: inline-flex; }
 .navegacion { display: flex; flex-wrap: wrap; gap: 0 var(--espacio-modulo); }
@@ -274,12 +300,14 @@
 }
 
 /* Coreografía del logotipo (Sangre del Sur): el icono, SANGRE y DEL SUR son tres
-   piezas de un mismo SVG que se recolocan en bucle (12 s): icono solo → icono con el
+   piezas de un mismo SVG que se recolocan en bucle (7.2 s): icono solo → icono con el
    nombre en dos líneas → nombre en dos líneas → nombre en una línea → icono sobre el
    nombre en una línea → icono solo. SANGRE se desplaza primero en horizontal y luego
    cae, para no pisar DEL SUR; el icono entra y sale del centro siempre en horizontal,
    a la misma altura. Sin movimiento, queda la versión con el icono y el nombre en dos
-   líneas. Coordenadas en unidades del lienzo (1600 × 500). */
+   líneas. Coordenadas en unidades del lienzo (1600 × 500).
+   Ciclo de 7.2 s: cada estado se mantiene unos 0,7 s para que el movimiento se note
+   aunque se pase rápido por la página. */
 .logo-coreografia {
   position: relative;
   grid-column: 1 / -1;
@@ -301,36 +329,36 @@
   transform-box: view-box;
   transform-origin: 0 0;
   transform: translate(417.07px, 75.85px) scale(1.4000);
-  animation: 12s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: 7.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 .logo-coreografia__pieza--icono { animation-name: sds-icono; }
 .logo-coreografia__pieza--sangre { animation-name: sds-sangre; }
 .logo-coreografia__pieza--delsur { animation-name: sds-delsur; }
 @keyframes sds-icono {
-  0%, 13.33% { transform: translate(681.29px, 83.95px) scale(1.2923); opacity: 1; }
-  18.33%, 33.33% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
-  35.83% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 0; }
-  73.33% { transform: translate(316.75px, -116.05px) scale(1.2923); opacity: 0; }
-  80%, 95% { transform: translate(316.75px, 83.95px) scale(1.2923); opacity: 1; }
+  0%, 10% { transform: translate(681.29px, 83.95px) scale(1.2923); opacity: 1; }
+  17.08%, 30.55% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  34.09% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 0; }
+  70.55% { transform: translate(316.75px, -116.05px) scale(1.2923); opacity: 0; }
+  80%, 92.92% { transform: translate(316.75px, 83.95px) scale(1.2923); opacity: 1; }
   100% { transform: translate(681.29px, 83.95px) scale(1.2923); opacity: 1; }
 }
 @keyframes sds-sangre {
-  0%, 16.67% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
-  21.67%, 33.33% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
-  40%, 53.33% { transform: translate(263.64px, 75.85px) scale(1.4000); }
-  57.5% { transform: translate(17.94px, 75.85px) scale(1.4000); }
-  61.67%, 73.33% { transform: translate(17.94px, 191.74px) scale(1.4000); }
-  80%, 92.5% { transform: translate(17.94px, 327.56px) scale(1.4000); opacity: 1; }
-  95.83% { transform: translate(17.94px, 327.56px) scale(1.4000); opacity: 0; }
+  0%, 14.73% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
+  21.81%, 30.55% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  40%, 50% { transform: translate(263.64px, 75.85px) scale(1.4000); }
+  55.9% { transform: translate(17.94px, 75.85px) scale(1.4000); }
+  61.81%, 70.55% { transform: translate(17.94px, 191.74px) scale(1.4000); }
+  80%, 89.38% { transform: translate(17.94px, 327.56px) scale(1.4000); opacity: 1; }
+  94.09% { transform: translate(17.94px, 327.56px) scale(1.4000); opacity: 0; }
   100% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
 }
 @keyframes sds-delsur {
-  0%, 16.67% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
-  21.67%, 33.33% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
-  40%, 53.33% { transform: translate(263.64px, 75.85px) scale(1.4000); }
-  57.5%, 73.33% { transform: translate(508.81px, 75.85px) scale(1.4000); }
-  80%, 92.5% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 1; }
-  95.83% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 0; }
+  0%, 14.73% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
+  21.81%, 30.55% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  40%, 50% { transform: translate(263.64px, 75.85px) scale(1.4000); }
+  55.9%, 70.55% { transform: translate(508.81px, 75.85px) scale(1.4000); }
+  80%, 89.38% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 1; }
+  94.09% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 0; }
   100% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -506,7 +534,20 @@
 .cartel__imagenes--dos + .cartel__texto { grid-column: span 1; grid-template-columns: minmax(0, 1fr); row-gap: var(--espacio-medianil); }
 .cartel__ficha { display: flex; flex-direction: column; gap: var(--espacio-modulo); min-width: 0; }
 .cartel .jsd-trayectoria { --jsd-columna-fechas: 0px; }
-.web .cartel__otros-etiqueta { margin-bottom: var(--espacio-modulo); }
+
+/* Otros carteles: navegación secundaria. Más pequeña que la ficha (rótulo en
+   estilo meta, filas de 14 px, flecha menor) y apoyada al pie del cartel, para
+   que la información de la película mande. */
+.cartel__texto { align-self: stretch; }
+.cartel__otros { align-self: end; }
+.web .cartel__otros-etiqueta {
+  margin-bottom: var(--espacio-parrafo);
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 200;
+}
+.cartel__otros .jsd-indice__fila { padding: 9px 0; font-size: 14px; font-weight: 400; gap: var(--espacio-parrafo); }
+.cartel__otros .jsd-indice__flecha { width: 18px; height: 13px; }
 
 /* Más proyectos */
 .mas-proyectos { padding-bottom: var(--espacio-seccion); }
@@ -538,6 +579,52 @@
 .faldon__pie { align-items: end; }
 .faldon__logo { display: flex; align-items: flex-end; }
 .jsd-indice__texto { min-width: 0; overflow-wrap: anywhere; }
+/* Flechas de los índices (contacto del faldón, más proyectos, otros carteles):
+   al pasar el cursor avanzan, como en los botones de las webs de proyecto */
+.web .jsd-indice__flecha { transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.web a.jsd-indice__fila:hover .jsd-indice__flecha,
+.web a.jsd-indice__fila:focus-visible .jsd-indice__flecha { transform: translateX(6px); }
+@media (prefers-reduced-motion: reduce) {
+  .web .jsd-indice__flecha { transition: none; }
+}
+
+/* Invitación a seguir bajando (páginas de proyecto con botón): al pie de la
+   columna del título, a la altura del botón, con la flecha del índice girada
+   hacia abajo y un vaivén suave. */
+.ficha-proyecto__pliego > div:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--espacio-medianil);
+  min-width: 0;
+}
+.invitacion {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--espacio-parrafo);
+  min-height: 56px;
+}
+.invitacion__flecha {
+  flex: none;
+  width: 27px;
+  height: 19px;
+  fill: currentColor;
+  transform: rotate(90deg);
+  animation: invitar 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes invitar {
+  0%, 100% { transform: rotate(90deg) translateX(-3px); }
+  50% { transform: rotate(90deg) translateX(5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .invitacion__flecha { animation: none; }
+}
+
+/* Cierre de los proyectos Mil manos: el botón a la web del proyecto vuelve a
+   aparecer antes de «Más proyectos», en la columna derecha como en la ficha */
+.cierre-proyecto { padding-bottom: var(--espacio-seccion); }
+.web .cierre-proyecto__boton { grid-column: 2; justify-self: start; margin-top: 0; }
 
 /* Pantallas estrechas: una columna */
 @media (max-width: 900px) {
@@ -555,6 +642,8 @@
     border-top: var(--trazo-filete) solid var(--filete);
   }
   .faldon__logo { order: 2; }
+  .invitacion { display: none; }
+  .web .cierre-proyecto__boton { grid-column: auto; }
   .galeria { grid-template-columns: minmax(0, 1fr); }
   .galeria__serie { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cartel__pliego { grid-template-columns: minmax(0, 1fr); }
@@ -714,13 +803,12 @@ body { margin: 0; }
 }
 
 /* Ámbitos de conocimiento (Congreso AJÁ!) -------------------------------
-   Pieza gráfica sin marco ni fondo, a todo el ancho de la galería, separada
-   de los carteles por un corte. Las cinco franjas se dibujan en bucle; en
-   pantallas estrechas el encuadre se queda solo con las franjas. */
-.web .ambitos-aja {
-  grid-column: 1 / -1;
-  min-width: 0;
-  margin: calc(var(--espacio-medianil) - var(--espacio-modulo)) 0 0;
-}
+   Pieza gráfica sin marco ni fondo, a todo el ancho de la galería. Las cinco
+   franjas se dibujan en bucle. En pantallas estrechas la pieza pasa a vertical,
+   como el cartel: textos arriba, franjas en medio y logotipo al pie (main.js
+   cambia el encuadre; aquí se recolocan los grupos, en unidades del dibujo). */
+.web .ambitos-aja { grid-column: 1 / -1; min-width: 0; margin: 0; }
+.web .ambitos-aja:not(:first-child) { margin-top: calc(var(--espacio-medianil) - var(--espacio-modulo)); }
 .ambitos-aja__lienzo { display: block; width: 100%; height: auto; }
-.ambitos-aja--estrecho .ambitos-aja__fijos { display: none; }
+.ambitos-aja--estrecho .ambitos-aja__textos { transform: translate(935px, -486px); }
+.ambitos-aja--estrecho .ambitos-aja__logo { transform: translate(933px, 153px); }
