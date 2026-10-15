@@ -165,8 +165,10 @@
 }
 .cabecera--flotante::after { opacity: 1; }
 .cabecera--oculta { transform: translateY(-100%); }
+/* Con «reducir movimiento», en vez de deslizarse se funde */
 @media (prefers-reduced-motion: reduce) {
-  .cabecera-web, .cabecera-web::after { transition: none; }
+  .cabecera-web { transition: opacity 0.35s ease; }
+  .cabecera--oculta { transform: none; opacity: 0; pointer-events: none; }
 }
 .enlace-logo { display: inline-flex; }
 .navegacion { display: flex; flex-wrap: wrap; gap: 0 var(--espacio-modulo); }
@@ -361,8 +363,39 @@
   94.09% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 0; }
   100% { transform: translate(457.07px, 75.85px) scale(1.4000); opacity: 0; }
 }
+/* Con «reducir movimiento», las piezas no se desplazan: el logotipo se funde a blanco,
+   cambia de composición mientras no se ve y vuelve a aparecer. Las cinco versiones
+   se suceden en 9 s (1,2 s cada una y 0,6 s de fundido entre ellas). */
 @media (prefers-reduced-motion: reduce) {
-  .logo-coreografia__pieza { animation: none; }
+  .logo-coreografia__lienzo { animation: sds-fundido 9s linear infinite; }
+  .logo-coreografia__pieza { animation-duration: 9s; animation-timing-function: step-end; }
+  .logo-coreografia__pieza--icono { animation-name: sds-icono-quieto; }
+  .logo-coreografia__pieza--sangre { animation-name: sds-sangre-quieto; }
+  .logo-coreografia__pieza--delsur { animation-name: sds-delsur-quieto; }
+}
+@keyframes sds-fundido {
+  0%, 13.333%, 20%, 33.333%, 40%, 53.333%, 60%, 73.333%, 80%, 93.333%, 100% { opacity: 1; }
+  16.667%, 36.667%, 56.667%, 76.667%, 96.667% { opacity: 0; }
+}
+@keyframes sds-icono-quieto {
+  0%, 96.667%, 100% { transform: translate(681.29px, 83.95px) scale(1.2923); opacity: 1; }
+  16.667% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  36.667%, 56.667% { opacity: 0; }
+  76.667% { transform: translate(316.75px, 83.95px) scale(1.2923); opacity: 1; }
+}
+@keyframes sds-sangre-quieto {
+  0%, 96.667%, 100% { opacity: 0; }
+  16.667% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  36.667% { transform: translate(263.64px, 75.85px) scale(1.4000); opacity: 1; }
+  56.667% { transform: translate(17.94px, 191.74px) scale(1.4000); opacity: 1; }
+  76.667% { transform: translate(17.94px, 327.56px) scale(1.4000); opacity: 1; }
+}
+@keyframes sds-delsur-quieto {
+  0%, 96.667%, 100% { opacity: 0; }
+  16.667% { transform: translate(417.07px, 75.85px) scale(1.4000); opacity: 1; }
+  36.667% { transform: translate(263.64px, 75.85px) scale(1.4000); opacity: 1; }
+  56.667% { transform: translate(508.81px, 75.85px) scale(1.4000); opacity: 1; }
+  76.667% { transform: translate(508.81px, 211.67px) scale(1.4000); opacity: 1; }
 }
 
 /* El bloque del logotipo cede al texto siguiente el blanco que sobra bajo la versión
@@ -617,8 +650,13 @@
   0%, 100% { transform: rotate(90deg) translateX(-3px); }
   50% { transform: rotate(90deg) translateX(5px); }
 }
+/* Con «reducir movimiento», la flecha no se mueve: late suavemente */
 @media (prefers-reduced-motion: reduce) {
-  .invitacion__flecha { animation: none; }
+  .invitacion__flecha { animation: invitar-suave 2s ease-in-out infinite; }
+}
+@keyframes invitar-suave {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
 }
 
 /* Cierre de los proyectos Mil manos: el botón a la web del proyecto vuelve a
@@ -756,8 +794,9 @@ a.jsd-indice__fila:focus-visible { outline: var(--trazo-foco) solid var(--foco);
 /* 5. Movimiento ----------------------------------------------------------
    Lo controla js/main.js. Cada elemento animado lleva data-anim con su tipo:
    subir · mascara · telon · filete · palabras · lineas · tinta.
-   Sin JavaScript, o con «reducir movimiento» activado en el sistema,
-   la web se ve quieta y completa. */
+   Con «reducir movimiento» activado en el sistema, las animaciones se quedan en
+   fundidos de opacidad, sin desplazamientos. Sin JavaScript, la web se ve quieta
+   y completa. */
 
 html { scroll-behavior: smooth; }
 body { margin: 0; }
@@ -777,23 +816,29 @@ body { margin: 0; }
 .tarjeta-proyecto__imagen { transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .tarjeta-proyecto:hover .tarjeta-proyecto__imagen { transform: scale(1.03); }
 
-/* Estado de partida (solo con JavaScript y sin «reducir movimiento»). Se oculta con
-   opacidad y no con recortes ni escalas: así el navegador sigue detectando cuándo
-   el elemento entra en pantalla. Al revelarse, main.js anima desde su forma de partida. */
+/* Estado de partida (solo con JavaScript). Se oculta con opacidad y no con recortes
+   ni escalas: así el navegador sigue detectando cuándo el elemento entra en pantalla.
+   Al revelarse, main.js anima desde su forma de partida. Con «reducir movimiento»
+   (iPhone: Ajustes › Accesibilidad › Movimiento, o el modo de bajo consumo) las
+   entradas son solo fundidos de opacidad, sin desplazamientos. */
+.js [data-anim="subir"]:not(.revelado),
+.js [data-anim="tinta"]:not(.revelado),
+.js [data-anim="mascara"]:not(.revelado),
+.js [data-anim="telon"]:not(.revelado),
+.js [data-anim="filete"]:not(.revelado) { opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {
-  .js [data-anim="subir"]:not(.revelado),
-  .js [data-anim="tinta"]:not(.revelado),
-  .js [data-anim="mascara"]:not(.revelado),
-  .js [data-anim="telon"]:not(.revelado),
-  .js [data-anim="filete"]:not(.revelado) { opacity: 0; }
   .js [data-anim="palabras"]:not(.revelado) .palabra__interior,
   .js [data-anim="lineas"]:not(.revelado) .linea__interior { transform: translateY(115%); }
-
-  /* Red de seguridad: si main.js no llegara a ejecutarse, todo aparece a los 2,5 s */
-  .js:not(.animado) [data-anim],
-  .js:not(.animado) .palabra__interior,
-  .js:not(.animado) .linea__interior { animation: mostrar 0.01s 2.5s forwards; }
 }
+@media (prefers-reduced-motion: reduce) {
+  .js [data-anim="palabras"]:not(.revelado) .palabra__interior,
+  .js [data-anim="lineas"]:not(.revelado) .linea__interior { opacity: 0; }
+}
+
+/* Red de seguridad: si main.js no llegara a ejecutarse, todo aparece a los 2,5 s */
+.js:not(.animado) [data-anim],
+.js:not(.animado) .palabra__interior,
+.js:not(.animado) .linea__interior { animation: mostrar 0.01s 2.5s forwards; }
 @keyframes mostrar { to { opacity: 1; clip-path: inset(0); transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {

@@ -15,17 +15,19 @@
       rotulan y se recogen en bucle mientras la pieza está a la vista. En
       pantallas estrechas la pieza se recompone en vertical.
 
-   Sin JavaScript, o con «reducir movimiento» activado en el sistema,
-   todo se ve quieto y completo. */
+   Con «reducir movimiento» activado en el sistema (iPhone: Ajustes › Accesibilidad ›
+   Movimiento, o el modo de bajo consumo), todo se queda en fundidos de opacidad, sin
+   desplazamientos. Sin JavaScript, la web se ve quieta y completa. */
 (function () {
   'use strict';
 
   var raiz = document.documentElement;
   raiz.classList.add('animado');
 
+  // «Reducir movimiento» (iPhone: Ajustes › Accesibilidad › Movimiento, o el modo de bajo
+  // consumo): las animaciones se quedan en fundidos de opacidad, sin desplazamientos.
   var reducir = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var puedeAnimar = !reducir && 'IntersectionObserver' in window &&
-    typeof Element.prototype.animate === 'function';
+  var puedeAnimar = 'IntersectionObserver' in window && typeof Element.prototype.animate === 'function';
 
   var SALIDA = 'cubic-bezier(0.2, 0.7, 0.2, 1)';   // suave al llegar
   var CORTINA = 'cubic-bezier(0.65, 0, 0.35, 1)';  // máscaras y trazos
@@ -50,7 +52,17 @@
   }
 
   function revelar(el, retardo) {
-    switch (el.getAttribute('data-anim')) {
+    var tipo = el.getAttribute('data-anim');
+    if (reducir) {
+      // Solo opacidad: cada palabra o línea se funde por turnos; lo demás, entero
+      var piezas = (tipo === 'palabras' || tipo === 'lineas') ? lista('.palabra__interior, .linea__interior', el) : [el];
+      piezas.forEach(function (pieza, i) {
+        animar(pieza, [{ opacity: 0 }, { opacity: 1 }], 700, 'ease-out', retardo + i * 60);
+      });
+      el.classList.add('revelado');
+      return;
+    }
+    switch (tipo) {
       case 'subir':
         animar(el, [{ opacity: 0, transform: 'translateY(37px)' }, { opacity: 1, transform: 'none' }], 800, SALIDA, retardo);
         break;
@@ -241,6 +253,19 @@
     var animaciones = [];
     lista('.ambitos-aja__franja', svg).forEach(function (trazo) {
       var i = +trazo.getAttribute('data-orden');
+      if (reducir) {
+        // Con «reducir movimiento», cada franja aparece y se va fundiéndose, sin dibujarse
+        trazo.style.opacity = '0';
+        animaciones.push(trazo.animate([
+          { offset: 0, opacity: 0 },
+          { offset: t(entra(i)), opacity: 0, easing: 'ease-out' },
+          { offset: t(entra(i) + DIBUJO), opacity: 1 },
+          { offset: t(recoge(i)), opacity: 1, easing: 'ease-in' },
+          { offset: t(recoge(i) + RECOGIDA), opacity: 0 },
+          { offset: 1, opacity: 0 }
+        ], { duration: CICLO, iterations: Infinity }));
+        return;
+      }
       var largo = Math.ceil(trazo.getTotalLength()) + 2;
       var oculto = largo + 'px';
       var fuera = -largo + 'px';

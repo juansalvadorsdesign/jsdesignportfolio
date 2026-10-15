@@ -23,7 +23,9 @@ docs/cv-juan-salvador.pdf      Currículum descargable
 
 ## Animaciones
 
-Cada elemento animado lleva `data-anim` con su tipo: `subir`, `mascara`, `telon`, `filete`, `palabras`, `lineas` o `tinta`. Para animar un elemento nuevo basta con añadirle el atributo. Sin JavaScript, o con «reducir movimiento» activado en el sistema, la web se ve quieta y completa.
+Cada elemento animado lleva `data-anim` con su tipo: `subir`, `mascara`, `telon`, `filete`, `palabras`, `lineas` o `tinta`. Para animar un elemento nuevo basta con añadirle el atributo. Con «reducir movimiento» activado en el sistema (en iPhone: Ajustes › Accesibilidad › Movimiento, o el modo de bajo consumo) las animaciones se convierten en fundidos de opacidad, sin desplazamientos. Sin JavaScript, la web se ve quieta y completa.
+
+Cuando cambien `css/estilos.css` o `js/main.js`, sube el número `?v=` con el que los enlazan las páginas para que los navegadores no usen la copia antigua.
 
 La cabecera se queda fija arriba: se esconde al bajar y reaparece en cuanto se sube. En las páginas de proyecto con botón, «Conoce el proyecto» invita a seguir bajando.
 
