@@ -13,6 +13,7 @@ creativelab.html               Mil manos · 01
 congreso-aja.html              Mil manos · 02 (incluye la pieza animada de los ámbitos)
 surtopias.html                 Mil manos · 03
 404.html                       Página no encontrada
+en/                            Versión en inglés: las mismas páginas, traducidas (con su propia 404)
 css/estilos.css                Variables y tipografía del sistema Juan Salvador, maquetación y movimiento
 js/main.js                     Animaciones (scroll, tinta de Sangre del Sur, ámbitos de AJÁ!)
 fonts/                         Zalando Sans SemiExpanded (variable, latín) y su licencia OFL
@@ -25,9 +26,15 @@ docs/cv-juan-salvador.pdf      Currículum descargable
 
 Cada elemento animado lleva `data-anim` con su tipo: `subir`, `mascara`, `telon`, `filete`, `palabras`, `lineas` o `tinta`. Para animar un elemento nuevo basta con añadirle el atributo. Con «reducir movimiento» activado en el sistema (en iPhone: Ajustes › Accesibilidad › Movimiento, o el modo de bajo consumo) las animaciones se convierten en fundidos de opacidad, sin desplazamientos. Sin JavaScript, la web se ve quieta y completa.
 
-Cuando cambien `css/estilos.css` o `js/main.js`, sube el número `?v=` con el que los enlazan las páginas para que los navegadores no usen la copia antigua.
+Cuando cambien `css/estilos.css` o `js/main.js`, sube el número `?v=` (ahora 3) con el que los enlazan las páginas para que los navegadores no usen la copia antigua.
 
 La cabecera se queda fija arriba: se esconde al bajar y reaparece en cuanto se sube. En las páginas de proyecto con botón, «Conoce el proyecto» invita a seguir bajando.
+
+## Idiomas
+
+La web está en español (raíz) y en inglés (`/en/`). El selector ES / EN de la cabecera lleva a la misma página en el otro idioma; en el móvil se muestra solo el otro idioma. Cada página indica su versión en el otro idioma con `hreflang`, y `sitemap.xml` incluye las dos.
+
+Cuando cambie un texto en español, hay que cambiar también su página en `/en/`. Los textos en inglés siguen la misma regla que en español: nunca en primera persona, siempre impersonales o en pasiva. Los nombres de los proyectos no se traducen.
 
 ## Publicación
 

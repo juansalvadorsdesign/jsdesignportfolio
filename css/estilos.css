@@ -174,6 +174,26 @@
 .navegacion { display: flex; flex-wrap: wrap; gap: 0 var(--espacio-modulo); }
 .navegacion a { display: inline-flex; align-items: center; min-height: 44px; }
 
+/* Selector de idioma (ES / EN): la jerarquía se marca solo con el peso, como en
+   todo el sistema. El idioma en pantalla, en Medium; la barra y el otro idioma,
+   en Light, que se subraya al pasar como el resto de enlaces. */
+.idiomas { display: inline-flex; align-items: center; gap: 0.3em; }
+.idiomas__actual { font-weight: 500; }
+.idiomas__barra { font-weight: 300; }
+.web .navegacion .idiomas__enlace { font-weight: 300; padding-inline: 6px; margin-inline: -6px; }
+/* En el móvil, para que la cabecera siga en una línea junto al logotipo, se
+   muestra solo el otro idioma y los huecos se ajustan al ancho disponible. */
+@media (max-width: 600px) {
+  .cabecera-web, .navegacion { column-gap: 20px; }
+  .idiomas__actual, .idiomas__barra { display: none; }
+}
+@media (max-width: 389px) {
+  .cabecera-web, .navegacion { column-gap: var(--espacio-parrafo); }
+}
+@media (max-width: 369px) {
+  .navegacion .etiqueta { font-size: 15px; }
+}
+
 /* Héroe: titular a todo el ancho; retrato y nombre en la retícula */
 .heroe {
   display: flex;
@@ -599,6 +619,8 @@
   line-height: 1.2;
   font-weight: 200;
 }
+:lang(en) .mas-proyectos div.jsd-indice__fila::after,
+:lang(en) .cartel__otros div.jsd-indice__fila::after { content: "CURRENT"; }
 
 /* Faldón */
 .faldon { background: var(--fondo); color: var(--tinta); }

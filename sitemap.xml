@@ -1,10 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://jsdesignportfolio.com/</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://jsdesignportfolio.com/sangre-del-sur.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://jsdesignportfolio.com/lanjaron.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://jsdesignportfolio.com/life-interchanging-films.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://jsdesignportfolio.com/creativelab.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://jsdesignportfolio.com/congreso-aja.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://jsdesignportfolio.com/surtopias.html</loc><lastmod>2026-10-15</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://jsdesignportfolio.com/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/sangre-del-sur.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/sangre-del-sur.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/sangre-del-sur.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/en/sangre-del-sur.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/sangre-del-sur.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/sangre-del-sur.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/lanjaron.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/lanjaron.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/lanjaron.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/en/lanjaron.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/lanjaron.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/lanjaron.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/life-interchanging-films.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/life-interchanging-films.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/life-interchanging-films.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/en/life-interchanging-films.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/life-interchanging-films.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/life-interchanging-films.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/creativelab.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/creativelab.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/creativelab.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/en/creativelab.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/creativelab.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/creativelab.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/congreso-aja.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/congreso-aja.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/congreso-aja.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/en/congreso-aja.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/congreso-aja.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/congreso-aja.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/surtopias.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/surtopias.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/surtopias.html"/>
+  </url>
+  <url>
+    <loc>https://jsdesignportfolio.com/en/surtopias.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jsdesignportfolio.com/surtopias.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jsdesignportfolio.com/en/surtopias.html"/>
+  </url>
 </urlset>
