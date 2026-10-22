@@ -194,7 +194,8 @@
   .navegacion .etiqueta { font-size: 15px; }
 }
 
-/* Héroe: titular a todo el ancho; retrato y nombre en la retícula */
+/* Héroe: titular a todo el ancho; debajo, el retrato ocupa toda la columna
+   izquierda y el nombre se apoya al pie de la derecha */
 .heroe {
   display: flex;
   flex-direction: column;
@@ -204,7 +205,7 @@
   padding-bottom: var(--espacio-seccion);
 }
 .titular { max-width: 9.6em; }
-.heroe__pie { align-items: start; }
+.heroe__pie { align-items: end; }
 
 /* Marcadores de imagen (pendientes de foto): fondo secundario, ángulo recto */
 .marcador {
@@ -216,15 +217,18 @@
   color: var(--negro);
   border-radius: var(--radio-recto);
 }
+/* Retrato de la portada: a todo el ancho de su columna y en su proporción
+   natural (2576 × 2378), sin recortes. Mientras carga, fondo negro como el de
+   la foto, para que no destelle. */
 .retrato {
   display: block;
-  width: min(331px, 100%);
+  width: 100%;
   height: auto;
-  aspect-ratio: 331 / 280;
+  aspect-ratio: 2576 / 2378;
   object-fit: cover;
   object-position: 50% 50%;
   border-radius: var(--radio-recto);
-  background: var(--secundario);
+  background: var(--negro);
 }
 
 /* Introducción: cita a la izquierda, texto a la derecha */
@@ -689,7 +693,6 @@
 /* Pantallas estrechas: una columna */
 @media (max-width: 900px) {
   .dos-columnas { grid-template-columns: minmax(0, 1fr); row-gap: var(--espacio-medianil); }
-  .heroe__pie .retrato { order: 2; }
   .proyectos__rejilla {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
