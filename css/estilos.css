@@ -207,6 +207,52 @@
 .titular { max-width: 9.6em; }
 .heroe__pie { align-items: end; }
 
+/* Portada en portátiles y pantallas apaisadas: la primera pantalla es un pliego
+   completo bajo la cabecera, con titular, retrato y nombre a la vista.
+   - Columna izquierda: el retrato a toda la altura, apoyado en los márgenes
+     izquierdo e inferior.
+   - Columna derecha: el titular arriba, con la altura de las mayúsculas alineada
+     con el borde superior de la foto, y el nombre con la profesión al pie, con la
+     línea base alineada con su borde inferior.
+   El titular escala con el ancho y con el alto de la pantalla para que siempre
+   queden al menos dos módulos (74 px) entre el titular y el nombre; el subtítulo
+   (el nombre) se recalcula con él: título ÷ 1,618 ÷ 1,618. En inglés el titular
+   es más largo y usa una escala algo menor. */
+:root { --pantalla: 100vh; }
+@supports (height: 100svh) { :root { --pantalla: 100svh; } }
+@media (min-width: 901px) and (orientation: landscape) and (min-height: 520px) {
+  .heroe {
+    --alto-cabecera: calc(48px + var(--espacio-modulo) * 2);
+    --titulo-tamano: clamp(48px, min(6vw, var(--pantalla) * 0.105), 94px);
+    --subtitulo-tamano: calc(var(--titulo-tamano) / var(--proporcion-aurea) / var(--proporcion-aurea));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto minmax(var(--espacio-medianil), 1fr) auto;
+    grid-template-areas: "foto titular" "foto ." "foto nombre";
+    column-gap: var(--espacio-medianil);
+    row-gap: 0;
+    box-sizing: border-box;
+    height: calc(var(--pantalla) - var(--alto-cabecera));
+    padding-top: calc(var(--espacio-parrafo) * 2);
+    padding-bottom: var(--espacio-modulo);
+    /* Por debajo de la primera pantalla se recupera el espacio entre secciones */
+    margin-bottom: calc(var(--espacio-seccion) - var(--espacio-modulo));
+  }
+  :lang(en) .heroe { --titulo-tamano: clamp(48px, min(5.6vw, var(--pantalla) * 0.095), 94px); }
+  .heroe__pie { display: contents; }
+  .heroe .titular { grid-area: titular; max-width: none; margin-top: -0.175em; }
+  .heroe .retrato {
+    grid-area: foto;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+    object-position: 50% 35%;
+  }
+  .heroe .heroe__nombre { grid-area: nombre; }
+  .heroe .heroe__nombre > .etiqueta { margin-bottom: -0.245em; }
+}
+
 /* Marcadores de imagen (pendientes de foto): fondo secundario, ángulo recto */
 .marcador {
   box-sizing: border-box;
