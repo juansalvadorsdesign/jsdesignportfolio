@@ -14,6 +14,8 @@
    4. Ámbitos de conocimiento de AJÁ!: las cinco franjas se dibujan, se
       rotulan y se recogen en bucle mientras la pieza está a la vista. En
       pantallas estrechas la pieza se recompone en vertical.
+   5. Retrato de la portada: en pantallas táctiles, al tocarlo se alterna con
+      la segunda foto (con ratón basta con pasar por encima).
 
    Con «reducir movimiento» activado en el sistema (iPhone: Ajustes › Accesibilidad ›
    Movimiento, o el modo de bajo consumo), todo se queda en fundidos de opacidad, sin
@@ -71,8 +73,11 @@
         break;
       case 'telon':
         animar(el, [{ clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], 1100, CORTINA, retardo);
-        var foto = el.tagName === 'IMG' ? null : el.querySelector('img');
-        if (foto) animar(foto, [{ transform: 'scale(1.15)' }, { transform: 'scale(1)' }], 1600, SALIDA, retardo);
+        if (el.tagName !== 'IMG') {
+          lista('img', el).forEach(function (foto) {
+            animar(foto, [{ transform: 'scale(1.15)' }, { transform: 'scale(1)' }], 1600, SALIDA, retardo);
+          });
+        }
         break;
       case 'filete':
         animar(el, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], 1000, CORTINA, retardo);
@@ -300,5 +305,15 @@
         animaciones.forEach(function (a) { if (entrada.isIntersecting) a.play(); else a.pause(); });
       });
     }, { threshold: 0.25 }).observe(figura);
+  });
+
+  /* 5. Retrato de la portada: con ratón, la segunda foto aparece al pasar por
+     encima (lo hace estilos.css); en pantallas táctiles, al tocar la foto. */
+  var tactil = window.matchMedia ? window.matchMedia('(hover: none)') : null;
+  lista('.retrato').forEach(function (retrato) {
+    if (!retrato.querySelector('.retrato__foto--alterna')) return;
+    retrato.addEventListener('click', function () {
+      if (tactil && tactil.matches) retrato.classList.toggle('retrato--alterna');
+    });
   });
 })();

@@ -26,7 +26,9 @@ docs/cv-juan-salvador.pdf      Currículum descargable
 
 Cada elemento animado lleva `data-anim` con su tipo: `subir`, `mascara`, `telon`, `filete`, `palabras`, `lineas` o `tinta`. Para animar un elemento nuevo basta con añadirle el atributo. Con «reducir movimiento» activado en el sistema (en iPhone: Ajustes › Accesibilidad › Movimiento, o el modo de bajo consumo) las animaciones se convierten en fundidos de opacidad, sin desplazamientos. Sin JavaScript, la web se ve quieta y completa.
 
-Cuando cambien `css/estilos.css` o `js/main.js`, sube el número `?v=` (ahora 3) con el que los enlazan las páginas para que los navegadores no usen la copia antigua.
+Cuando cambien `css/estilos.css` o `js/main.js`, sube el número `?v=` (ahora 6) con el que los enlazan las páginas para que los navegadores no usen la copia antigua.
+
+El retrato de la portada lleva dos fotos encajadas (`retrato-juan-salvador-estudio-*` y `…-alterna-*`): al pasar el cursor, la segunda aparece con un fundido; en el móvil, al tocar la foto.
 
 La cabecera se queda fija arriba: se esconde al bajar y reaparece en cuanto se sube. En las páginas de proyecto con botón, «Conoce el proyecto» invita a seguir bajando.
 
